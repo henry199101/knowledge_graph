@@ -3,9 +3,7 @@
 from py2neo import Graph, Node, Relationship
 from tools.make_a_list_of_strings import make_a_list_of_strings
 from tools.files import *
-from py2neo.data import Node
-from queue import Queue
-from tools.timer import timer
+from tools.timer import get_time_or_not_for_method
 from tools.transfer_chinese_words_to_pinyins import transfer_chinese_words_to_pinyins
 
 '''
@@ -28,7 +26,7 @@ class DataModel(object):
     def __init__(self):
         self.entity_name_cache = set()
         self.property_name_cache = set()
-        self.node_queue = Queue()
+        self.node_queue = list()
         self.node = None
 
         self.g = None
@@ -39,8 +37,8 @@ class DataModel(object):
         self.g = Graph(scheme=scheme, host=host, username=username, password=password)
         self.transaction = self.g.begin()
 
-    @timer
-    def batch_load(self, source_file, mapper_file):
+    #@get_time_or_not_for_method(get=False)
+    def batch_load(self, source_file, mapper_file, n=3):
         def get_pinyin_n(property_name):
             for line in open(mapper_file):
                 hanzis, pinyins = make_a_list_of_strings(line, sep=' ')
@@ -58,7 +56,7 @@ class DataModel(object):
                 self.node[property_name].append(property_value)
 
         def set_entity_name_of_node():
-            self.node_queue.put(self.node)
+            self.node_queue.append(self.node)
 
             self.entity_name_cache = set()
             self.entity_name_cache.add(entity_name)
@@ -66,17 +64,21 @@ class DataModel(object):
             self.node['entity_name'] = entity_name
 
         def commit_head_node():
-            head_node = self.node_queue.get()
+            head_node = self.node_queue.pop(0)
             self.connect_data_base()
             self.transaction.create(head_node)
             self.transaction.commit()
 
-        def commit_n_nodes(n):
-            for _ in range(n):
-                pass
-            head_node = self.node_queue.get()
+        def commit_no_more_than_n_nodes_per_trans(n):
             self.connect_data_base()
-            self.transaction.create(head_node)
+
+            for _ in range(n):
+                if len(self.node_queue) >= 1:
+                    head_node = self.node_queue.pop(0)
+                    self.transaction.create(head_node)
+                else:
+                    break
+
             self.transaction.commit()
 
         for line in open(source_file):
@@ -84,18 +86,18 @@ class DataModel(object):
                 break
 
             entity_name, property_name, property_value = make_a_list_of_strings(line)
-            property_name = get_pinyin_n(property_name)
+            #property_name = get_pinyin_n(property_name)
 
             if entity_name not in self.entity_name_cache:
-                if self.node_queue.qsize() == 1:
-                    commit_head_node()
+                if len(self.node_queue) == n:
+                    commit_no_more_than_n_nodes_per_trans(n)
 
                 self.node = Node()
                 set_entity_name_of_node()
 
             set_property_of_node()
 
-        commit_head_node()
+        commit_no_more_than_n_nodes_per_trans(n)
 
 
 if __name__ == '__main__':
