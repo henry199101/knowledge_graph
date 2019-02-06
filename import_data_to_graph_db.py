@@ -104,7 +104,7 @@ class DataModel(object):
 
 
 if __name__ == '__main__':
-    source_file = total_txt_9_lines
+    source_file = total_txt_1_to_10000
     mapper_file = total_txt_9_lines_mapper_of_property_names_to_pinyins
 
     dm = DataModel()
