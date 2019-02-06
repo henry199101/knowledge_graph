@@ -86,7 +86,6 @@ class DataModel(object):
                 break
 
             entity_name, property_name, property_value = make_a_list_of_strings(line)
-            #property_name = get_pinyin_n(property_name)
 
             if entity_name not in self.entity_name_cache:
                 if len(self.node_queue) == n:
@@ -95,7 +94,11 @@ class DataModel(object):
                 self.node = Node()
                 set_entity_name_of_node()
 
-            set_property_of_node()
+            if property_name == 'BaiduTAG':
+                self.node.add_label(property_value)
+            else:
+                # property_name = get_pinyin_n(property_name)
+                set_property_of_node()
 
         commit_no_more_than_n_nodes_per_trans(n)
 
