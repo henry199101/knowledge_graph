@@ -105,13 +105,14 @@ class DataModel(object):
 
             end_time = time()
 
-            seconds = end_time - start_time
+            elapsed_seconds = end_time - start_time
 
-            hours, minutes, seconds = get_hours_minutes_seconds(seconds)
+            hours, minutes, seconds = get_hours_minutes_seconds(elapsed_seconds)
 
-            need_seconds = seconds * (1 - percent) / percent
+            need_total_seconds = elapsed_seconds * (1 - percent) / percent
 
-            need_hours, need_minutes, need_seconds = get_hours_minutes_seconds(need_seconds)
+            need_hours, need_minutes, need_seconds = get_hours_minutes_seconds(need_total_seconds)
+
             sys.stdout.write("\r已处理约 %.3f%% 的数据，"
                              "已累计耗时 %d 小时 %d 分钟 %d 秒，预计还需要 %d 小时 %d 分钟 %d 秒..."
                              % (percent100, hours, minutes, seconds, need_hours, need_minutes, need_seconds))
@@ -152,7 +153,7 @@ class DataModel(object):
 
 
 if __name__ == '__main__':
-    source_file = total_txt_1_to_10000
+    source_file = total_txt_1_to_1000
     mapper_file = total_txt_9_lines_mapper_of_property_names_to_pinyins
     n = 100
 
