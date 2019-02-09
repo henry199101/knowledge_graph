@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+    {% block head %}
+    {% endblock head %}
+</head>
+<body>
+<nav>
+    <a href="{{ url_for('index') }}">CN-KNpedia</a>
+</nav>
+<main>
+    {% block content %}
+    {% endblock content %}
+</main>
+
+<footer>
+    {% block footer %}
+    {% endblock footer %}
+</footer>
+</body>
+</html>
