@@ -1,7 +1,7 @@
 prefix = 'files/'
 
 # txt & json files
-total_txt           = prefix + 'baiketriples.txt'
+total_txt           = prefix + 'baiketriples_read_only.txt'
 
 total_txt_1_to_10   = prefix + 'baiketriples_1_to_10_read_only.txt'
 
