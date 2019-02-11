@@ -1,28 +1,21 @@
 # coding:utf-8
+import sys
+sys.path.append('../')
 
-from py2neo import Graph, Node, Relationship
-from tools.make_a_list_of_strings import make_a_list_of_strings
-from tools.files import *
-from tools.timer import get_time_or_not_for_method, get_hours_minutes_seconds
-from tools.transfer_chinese_words_to_pinyins import transfer_chinese_words_to_pinyins
+
+from py2neo import Graph, Node, Relationship, NodeMatcher
+try:
+    from .tools.make_a_list_of_strings import make_a_list_of_strings
+    from .tools.files import *
+    from .tools.timer import get_time_or_not_for_method, get_hours_minutes_seconds
+    from .tools.transfer_chinese_words_to_pinyins import transfer_chinese_words_to_pinyins
+except:
+    from tools.make_a_list_of_strings import make_a_list_of_strings
+    from tools.files import *
+    from tools.timer import get_time_or_not_for_method, get_hours_minutes_seconds
+    from tools.transfer_chinese_words_to_pinyins import transfer_chinese_words_to_pinyins
 import sys
 from time import time
-
-
-'''
-class DomainModel(DataModel):
-    def __init__(self):
-        pass
-
-    def query(self):
-        pass
-
-    def remove(self):
-        pass
-
-    def append(self, entity_name, property_name, property_value):
-        pass
-'''
 
 
 class DataModel(object):
@@ -152,10 +145,45 @@ class DataModel(object):
         sys.stdout.write('\n\n数据已经完全导入数据库！\n\n')
 
 
+class DomainModel(DataModel):
+    def __init__(self):
+        self.connect_data_base()
+        self.matcher = NodeMatcher(self.g)
+        self.results = None
+
+    def query(self, entity_name):
+        self.results = self.matcher.match().where("_.entity_name")
+        return self.results
+
+    def remove(self):
+        pass
+
+    def append(self, entity_name, property_name, property_value):
+        pass
+
+
 if __name__ == '__main__':
-    source_file = total_txt_1_to_1000
+
+    source_file = total_txt
     mapper_file = total_txt_9_lines_mapper_of_property_names_to_pinyins
     n = 100
 
     dm = DataModel()
     dm.batch_load(source_file, mapper_file, n)
+    '''
+    domain_model = DomainModel()
+    query_result = domain_model.query('-幸福顺流成海')
+
+    labels = query_result.labels
+
+    for label in labels:
+        print(type(label))
+        print(label)
+
+    keys = query_result.keys()
+    print('\n')
+    for key in keys:
+        for value in query_result[key]:
+            if key != 'entity_name':
+                print(key, value)
+    '''
