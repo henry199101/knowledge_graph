@@ -1,0 +1,38 @@
+{% extends "search_base_page.html" %}
+
+{% block content %}
+{{ super() }}
+
+    Query String:{{ query_result['entity_name'] }}<br>
+    Named-Entity Disambiguation:{{ query_result['entity_name'] }}<br>
+
+    <a href="">Visualization</a>
+    以下是该实体名对应的结点的可视化区域
+    <a href="">Timeline</a>
+    <a href="">Curiosity</a><br>
+
+    Information(可下拉、收起)<br>
+        {{ query_result['BaiduCARD'][0] }}<br>
+
+    Description Graph(可下拉、收起)<br>
+
+    InfoBox(可下拉、收起)<br>
+        {% for key in keys %}
+            {% if key != 'entity_name' and key !='BaiduCARD'%}
+                {% for item in query_result[key] %}
+                    {{ key }} {{ item }}<br>
+                {% endfor %}
+            {% endif %}
+        {% endfor %}<br>
+
+    CN-Probase Concept(可下拉、收起)<br>
+
+        {% for label in labels %}
+            概念 {{ label }}<br>
+        {% endfor %}<br>
+
+    DBpedia Type(可下拉、收起)<br>
+    Baidu Baike Tag(可下拉、收起)<br>
+    Linkingbr(可下拉、收起)<br>
+
+{% endblock content %}

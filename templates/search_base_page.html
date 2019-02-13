@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <form method="post">
+        {{ form.csrf_token }}
+        {{ form.search_content }}
+        {{ form.search_button }}<br>
+        e.g.,<a href="{{ url_for('index') }}">复旦大学</a>、<a href="">周杰伦</a><br>
+    </form>
+{% endblock content %}

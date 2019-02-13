@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+
+{% block content %}
+{{ super() }}
+
+{% for query_result in query_results %}
+    {{ query_result.entity_name }}
+{% endfor %}
+
+{% endblock content %}

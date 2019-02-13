@@ -1,0 +1,9 @@
+{% extends "search_base_page.html" %}
+
+{% block content %}
+{{ super() }}
+
+    Query String:{{ entity_name }}<br>
+    Not Found in CN-DBpedia
+
+{% endblock content %}
