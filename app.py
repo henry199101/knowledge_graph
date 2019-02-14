@@ -13,6 +13,11 @@ def index():
     return redirect(url_for('search'))
 
 
+@app.route('/intro/')
+def intro():
+    return render_template('introduction.html')
+
+
 @app.route('/search/', methods=['GET', 'POST'])
 @app.route('/search/<entity_name>', methods=['GET', 'POST'])
 def search():
