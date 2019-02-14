@@ -18,6 +18,11 @@ def intro():
     return render_template('introduction.html')
 
 
+@app.route('/contributors/')
+def contributors():
+    return render_template('contributors.html')
+
+
 @app.route('/search/', methods=['GET', 'POST'])
 @app.route('/search/<entity_name>', methods=['GET', 'POST'])
 def search():
